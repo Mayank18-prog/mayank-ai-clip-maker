@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mayank AI Clip Maker</title>
+<style>
+:root{color-scheme:dark;--bg:#090d18;--panel:#121a2b;--line:#26334d;--muted:#9aa8c2;--accent:#7c5cff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#1c2450 0,transparent 38%),var(--bg);color:#f5f7ff;font:16px system-ui,Arial,sans-serif}
+main{width:min(760px,92%);margin:28px auto}.brand{text-align:center;margin-bottom:22px}.logo{font-size:38px}.brand h1{margin:8px 0 4px;font-size:clamp(26px,6vw,38px)}.brand p,.hint{color:var(--muted)}.card{background:linear-gradient(145deg,#151f34,#101726);border:1px solid var(--line);border-radius:22px;padding:20px;margin:15px 0;box-shadow:0 16px 45px #0005}
+label{display:block;font-weight:650;margin:0 0 9px}input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #34415e;background:#0b1220;color:white;font-size:15px}
+.tabs{display:flex;gap:8px;margin-bottom:17px}.tab{flex:1;border:1px solid #34415e;background:#0b1220;color:#dce4f7;border-radius:11px;padding:12px;font-weight:700}.tab.active{background:#382d70;border-color:#7c5cff}
+.panel{display:none}.panel.active{display:block}.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:15px}.row>div{flex:1;min-width:145px}
+.btn{border:0;border-radius:12px;padding:15px 18px;font-weight:750;font-size:15px;cursor:pointer;background:linear-gradient(90deg,#7c5cff,#4f8cff);color:white;width:100%;margin-top:16px}.status{display:none;margin-top:15px;padding:13px;border-radius:12px;background:#28233c;border:1px solid #54468b;line-height:1.5}
+.preview{display:none;width:100%;max-height:340px;margin-top:14px;border-radius:13px;background:#050810}.hint{font-size:13px;line-height:1.55}.features{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.feature{padding:13px;border:1px solid var(--line);border-radius:13px;background:#0d1525}.feature span{display:block;font-size:13px;color:var(--muted);margin-top:4px}footer{text-align:center;color:var(--muted);font-size:12px;padding:14px}
+@media(max-width:480px){main{margin:20px auto}.card{padding:16px}.features{grid-template-columns:1fr}}
+</style></head><body><main>
+<header class="brand"><div class="logo">✂️ 🎬</div><h1>Mayank AI Clip Maker</h1><p>Turn long videos into short-form content</p></header>
+<section class="card">
+<h2 style="margin:0 0 15px">1. Add your video</h2>
+<div class="tabs"><button class="tab active" id="ytTab" type="button">YouTube link</button><button class="tab" id="fileTab" type="button">Upload video</button></div>
+<div class="panel active" id="ytPanel"><label for="videoUrl">YouTube video link</label><input id="videoUrl" type="url" placeholder="https://youtu.be/..."><p class="hint">Some YouTube videos block embedded preview. The link can still be submitted to a supported processing backend.</p></div>
+<div class="panel" id="filePanel"><label for="videoFile">Choose video from gallery</label><input id="videoFile" type="file" accept="video/*"><video id="localPreview" class="preview" controls playsinline></video><p class="hint" id="fileInfo">Select a video from your phone to preview it.</p></div>
+<h2 style="margin:22px 0 14px">2. Clip settings</h2>
+<div class="row"><div><label for="clipCount">Number of clips</label><select id="clipCount"><option>5</option><option>3</option><option>8</option><option>10</option></select></div><div><label for="duration">Clip length</label><select id="duration"><option value="30-60">30–60 seconds</option><option value="15-30">15–30 seconds</option><option value="60-90">60–90 seconds</option></select></div></div>
+<div class="row"><div><label for="format">Video format</label><select id="format"><option>9:16 Shorts</option><option>16:9 Landscape</option><option>1:1 Square</option></select></div><div><label for="captionLang">Caption language</label><select id="captionLang"><option value="both">Hinglish + English (both)</option><option value="hinglish">Hinglish only</option><option value="english">English only</option></select></div></div>
+<button class="btn" id="generate" type="button">✨ Generate clips</button><div class="status" id="status" role="status"></div>
+<p class="hint">Honest note: this is the website interface and local video preview. Automatic AI moment detection, bilingual subtitles and MP4 exports need a server-side video-processing service/API. No clips are created until that backend is connected.</p>
+</section>
+<section class="card"><h2 style="margin:0 0 14px">Coming with the processing backend</h2><div class="features">
+<div class="feature">🎯 <b>AI highlights</b><span>Find engaging moments automatically.</span></div>
+<div class="feature">🗣️ <b>Dual captions</b><span>Hinglish and English subtitle options.</span></div>
+<div class="feature">📱 <b>Shorts format</b><span>Vertical 9:16 video export.</span></div>
+<div class="feature">⬇️ <b>Download clips</b><span>Save each finished clip as MP4.</span></div>
+</div></section><footer>Mayank AI Clip Maker · Updated starter version</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let source='youtube',localUrl='';
+function setSource(which){source=which;$('ytTab').classList.toggle('active',which==='youtube');$('fileTab').classList.toggle('active',which==='file');$('ytPanel').classList.toggle('active',which==='youtube');$('filePanel').classList.toggle('active',which==='file');$('status').style.display='none';}
+$('ytTab').onclick=()=>setSource('youtube');$('fileTab').onclick=()=>setSource('file');
+$('videoFile').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(localUrl)URL.revokeObjectURL(localUrl);localUrl=URL.createObjectURL(f);$('localPreview').src=localUrl;$('localPreview').style.display='block';$('fileInfo').textContent='Selected: '+f.name+' ('+(f.size/1024/1024).toFixed(1)+' MB).';});
+function validYouTube(v){try{const u=new URL(v);return (u.hostname==='youtu.be'&&u.pathname.length>1)||(u.hostname.endsWith('youtube.com')&&(u.searchParams.has('v')||/^\/(shorts|live|embed)\//.test(u.pathname)));}catch(e){return false;}}
+$('generate').onclick=()=>{const box=$('status');box.style.display='block';if(source==='youtube'&&!validYouTube($('videoUrl').value.trim())){box.textContent='Please paste a valid YouTube link.';return;}if(source==='file'&&!$('videoFile').files.length){box.textContent='Please choose a video from your phone gallery.';return;}const lang=$('captionLang').selectedOptions[0].text;box.textContent='Your video and settings are selected. Caption setting: '+lang+'. The AI processing server is not connected yet, so clips cannot be generated or downloaded from this version.';};
+</script></body></html>
